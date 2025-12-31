@@ -1,0 +1,61 @@
+
+<!-- 
+{/*  playing  variables with JavaScript  */} -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        :root{
+    --spacing:10px; /* defininng css variable so javascrit can access or update it dynamically*/
+    --blur:10px;
+    --base:#ffc600;
+}
+        body{
+            display: flex; /*turn on flex*/
+            flex-direction: column;
+            align-items: center; /*center items horizontally*/
+            gap: 20px;
+
+
+        }
+     img{
+        width: 600px;
+        height: 600px;
+        padding: var(--spacing); /* here var means taking a value from this variable --spacing*/
+        background-color: var(--base);
+        filter: blur(var(--blur));
+     }
+
+    </style>
+</head>
+<body>
+    <h1>Update css variable with JavaScript</h1>
+    <div class="control"> <!-- control for css variable -->
+        <label for="spacing">spacing</label>
+        <input name="spacing" type="range"  value="10" min="0" max="200" data-sizing="px">
+        <label for="blur">blur</label>
+        <input name="blur" type="range" value="20" min="0" max="25" data-sizing="px">
+        <label for="base">base</label>
+        <input type="color" name="base" value="#ffc600">
+    </div>
+    
+    <img src="https://images.pexels.com/photos/162031/dubai-tower-arab-khalifa-162031.jpeg?cs=srgb&dl=pexels-pixabay-162031.jpg&fm=jpg">
+    <script>
+        const inputs=document.querySelectorAll('.control input'); // slecting all  the inputs inside the control class
+           handleUpdate= (e)=>{
+        //    console.log(e.target.value);// to  see the value of each input when we change it
+        // console.log(e.target.dataset); // to see the data attribute of each input when we change it 
+        const suffix=e.target.dataset.sizing ||''; // checking if there is a data sizing attribute 
+        document.documentElement.style.setProperty(`--${e.target.name}`,e.target.value+suffix); //updating css variable dynamically
+        }
+        inputs.forEach(input=>{
+            input.addEventListener('input',handleUpdate);//when we change the unput value the event listener and call  the handleUpdate function
+           
+        })
+      
+    </script>
+</body>
+</html>
