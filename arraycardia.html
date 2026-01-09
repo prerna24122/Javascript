@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div class="mw-category">
+        <h1>link</h1>
+        <a href="">Delhi</a>
+        <a href="">Mumbai</a>
+        <a href="">Kolkata</a>
+        <a href="">Chennai</a>
+    </div>
+    <script>
+        const inventors=[
+            {
+                first:"Prerna",
+                last:"Singh",
+                year:2004,
+
+            },
+            {
+                first:"John",
+                last:"Doe",
+                year:2000,
+            },
+            {
+                first:"Tanu",
+                last:"Kumar",
+                year:1990,
+            }
+        ];
+        // // list of inventors born in 2000s here we use filter method
+        // const twentyCentury=inventors.filter(inventor=>inventor.year>=2000 && inventor.year<2005);
+        // console.table(twentyCentury);
+        // //list or create array of first and last names of inventors using map method
+        // const fullNames=inventors.map(inventor=>`${inventor.first} ${inventor.last}`);
+        // console.table(fullNames);
+        //sort inventors by birthdate using sort method
+        // const ordered=inventors.sort((a,b)=>a.year>b.year?true:-false);
+        // console.table(ordered);
+
+    //     const links=document.querySelectorAll('.mw-category a'); //slect all the links inside the mw-category class
+    //    console.log(links); // Node list of all the links list [a,a,a,a] this is not a array so convert them in array
+    //    const linkArray=Array.from(links); // convert nodelist into aaray
+    //    console.log(linkArray);// now this ia an array of links
+    //    // create an array of city names from the link array using map method
+    //    const cities=linkArray.map(link=>link.textContent); //textContent to get the text inside the a or a anchor tag
+    //    console.log(cities);
+    //    // now filter the cities which have de in their names
+    //    const deCities=cities.filter(city=>city.includes('De'));
+    //    console.log(deCities);
+
+
+
+
+
+
+    const data=['car','bike','bus','train','walk','car','bus','train']; 
+    const transportation =data.reduce((obj,item)=>{ // reduce method to count each item in array by creating obj where the data ise storead as key value pair and item is the key
+        if(!obj[item]){
+            obj[item]=0;
+
+        }
+        obj[item]++;
+        return obj;
+    },{});// intial value is empty object
+    console.log(transportation)
+
+
+
+
+    </script>
+</body>
+</html>
