@@ -88,8 +88,7 @@
     <script>
         const pannels=document.querySelectorAll('.panel');
         function activeClass(e){
-            this.classList.toggle("open"); // check if open class is there remove it otherwise add it in which pannel we click toogle means here add or remove open class
-            
+            this.classList.toggle("open"); // to only changes class on the clicked pannel if class present remove it  if not add  it
         }
         pannels.forEach(panel=>{
             panel.addEventListener('click',activeClass);

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        const peeople=[{
+            name:"Prerna",
+            age:21
+        },
+        {
+            name:"Tanu",
+            age:14
+        },
+    {
+        name:"John",
+        age:30
+    }, ] 
+    // array.prototype.some() method - atleast one person is 19 or older
+
+    const isAdult=peeople.some(person=>{
+        return person.age>=19 // return true if atleast one person is 19 or older
+    })
+    console.log({isAdult});
+
+
+    const isAllAdult=peeople.every(person=>{
+        return person.age>=19
+    })
+    console.log({isAllAdult});
+
+    const comments=[
+        {text:"hello",id:123},
+        {text:"helloo",id:124},
+        {text:"hellooo",id:125},
+        {text:"helloooo",id:126},
+        {text:"helloooooo",id:127},
+        {text:"helloooooooo",id:129},
+        {text:"helloooooooooooo",id:1210},
+        {text:"hello",id:1212},
+        {text:"hello",id:1214},
+
+    ];
+    //find method -the find method returns the singke value if one condition is meet where as filter method returns an array of values
+    const comentId=comments.find(comment=>comment.id===126);
+    console.log(comentId);
+    // find the index of the comments with the id of 126
+    const commentIndex=comments.findIndex(comment=>comment.id===126);
+    console.log(commentIndex);
+    // delete the comment with the id of 126
+    comments.splice(commentIndex,1); // means from the CommentIndex delete 1 item // array.splice(startIndex, deleteCount) start froom 126 
+    console.log(comments);
+
+    </script>
+</body>
+</html>
