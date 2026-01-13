@@ -53,6 +53,14 @@
     // delete the comment with the id of 126
     comments.splice(commentIndex,1); // means from the CommentIndex delete 1 item // array.splice(startIndex, deleteCount) start froom 126 
     console.log(comments);
+    // slice method -it create a new array from the existing array without modifying the original array
+
+
+    
+    const newComments=[
+        ...comments.slice(0,commentIndex), // all the comments before the commentIndex ...spread operator to spread the array elements
+        ...comments.slice(commentIndex+1)  // all the comments after the commentIndex
+    ]
 
     </script>
 </body>
