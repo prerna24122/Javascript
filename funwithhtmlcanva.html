@@ -8,7 +8,8 @@
         html,body{
             margin: 0;
         }
-       
+
+     
     </style>
 </head>
 <body>
@@ -29,7 +30,7 @@ let lastx=0; // last possition of mouse staring point of x
 let lasty=0;// last position of mouse starting point of y
 
 let hue = 0;// initial value of hue for color
-let direction=true; // flag to check the direction of line width increasing and decreasing
+let direction=true; // flag to check the direction of line width increasing and decreasing 
 
 
 function draw(e)
@@ -54,14 +55,14 @@ if(hue>360){
 
 
   if(ctx.lineWidth>=500 || ctx.lineWidth<1){
-    direction=!direction;
+    direction=!direction; //reverse the direction means if it is increasing  make it decreasing and vice versa
 
   }
   else if(direction){
-    ctx.lineWidth++;
+    ctx.lineWidth++; // increase the line width
   }
   else{
-    ctx.lineWidth--;
+    ctx.lineWidth--; // decrease the line width
   }
 
 }
@@ -76,8 +77,7 @@ canvas.addEventListener('mousedown',(e)=> {
 canvas.addEventListener('mouseup',(e)=> isDrawing=false);
 canvas.addEventListener('mouseout',()=> isDrawing=false);
 
-
-            </script>
+</script>
    
 </body>
 </html>

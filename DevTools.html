@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dev Tools</title>
+</head>
+<body>
+    <p onclick="tools()">Dev Tools</p>
+    <script>
+        function tools(){
+            // window.open('DevTools.html', '_blank') // this will open DevTools.html in a new tools
+            const p=document.querySelector('p'); // slecting the p element
+            p.style.color="red";
+            p.style.fontSize="100px";
+        }
+        // regular 
+        console.log('hello world');
+        // interpolated means variable placement putting a value in inside the string 
+        console.log('hello this  is %s is an example of interpolated string', 'funwithhtmlcanva.html');
+    const name="prerna";
+        console.log(`hello my name is ${name}`);// uisngb template literals
+
+        //style
+        console.log('%c I am some great text', 'background-color:yellow'); // here using %c we can aplly css styles to the console log 
+
+        // warning
+        console.warn("this is a warning message");
+        //error
+        console.error("this is an error message");
+
+
+        //info
+        console.info("this is an info message");
+
+        //testing
+        console.assert(1==2,'1 is not equal to 2'); // this will print this message beacuse  the condition is false
+        
+        const p1=document.querySelector('p');
+        console.assert(p1.classList.contains('ouch'),"p does not have ouch class"); // this will print this message beacuse p does not have ouch class
+        //clearing
+        // console.clear();
+
+    </script>
+</body>
+</html>
