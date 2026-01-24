@@ -1,0 +1,154 @@
+
+<!--  Custom the video html player (24/01/26) -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Custom Video Player</title>
+
+<style>
+/* ===== PLAYER WRAPPER ===== */
+.player {
+  position: relative;
+  max-width: 800px;
+  margin: 40px auto;
+}
+
+/* ===== VIDEO ===== */
+.player video {
+  width: 100%;
+  display: block;
+}
+
+/* ===== CONTROLS CONTAINER ===== */
+.player__controls {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: rgba(0,0,0,0.6);
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+/* ===== PROGRESS BAR ===== */
+.progress {
+  height: 5px;
+  background: #444;
+  cursor: pointer;
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.progress__filled {
+  height: 100%;
+  flex-basis: 0%;
+  background: #ffcc00;
+}
+
+/* ===== CONTROL ROW ===== */
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ===== BUTTONS ===== */
+.player__button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* ===== SLIDERS ===== */
+input[type="range"] {
+  width: 100px;
+}
+</style>
+</head>
+
+<body>
+
+    <div>
+           
+  <video class="viewer" controls src="Dubia.mp4"></video>
+    </div>
+
+<div class="player">
+  
+    
+  <video class="viewer" src="Dubia.mp4"></video>
+
+  <div class="player__controls">
+
+    <!-- Progress bar -->
+    <div class="progress">
+      <div class="progress__filled"></div>
+    </div>
+
+    <!-- Controls -->
+    <div class="controls">
+      <button class="player__button toggle">►</button>
+
+      <input type="range" name="volume" min="0" max="1" step="0.05" value="1">
+      <input type="range" name="playbackRate" min="0.5" max="2" step="0.1" value="1">
+
+      <button class="player__button" data-skip="-10">« 10s</button>
+      <button class="player__button" data-skip="25">25s »</button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ===== ELEMENTS =====
+const player = document.querySelector('.player');
+const video = player.querySelector('.viewer');
+const toggle = player.querySelector('.toggle');
+const progress = player.querySelector('.progress');
+const progressBar = player.querySelector('.progress__filled');
+const skipButtons = player.querySelectorAll('[data-skip]');
+const ranges = player.querySelectorAll('input[type="range"]');
+
+// ===== FUNCTIONS =====
+function togglePlay() {
+  video.paused ? video.play() : video.pause();
+}
+
+function updateButton() {
+  toggle.textContent = video.paused ? '►' : '⏸';
+}
+
+function skip() {
+  video.currentTime += parseFloat(this.dataset.skip);
+}
+
+function handleRangeUpdate() {
+  video[this.name] = this.value;
+}
+
+function handleProgress() {
+  const percent = (video.currentTime / video.duration) * 100;
+  progressBar.style.flexBasis = `${percent}%`;
+}
+
+// ===== EVENTS =====
+video.addEventListener('click', togglePlay);
+toggle.addEventListener('click', togglePlay);
+
+video.addEventListener('play', updateButton);
+video.addEventListener('pause', updateButton);
+
+skipButtons.forEach(btn => btn.addEventListener('click', skip));
+ranges.forEach(range => range.addEventListener('input', handleRangeUpdate));
+
+video.addEventListener('timeupdate', handleProgress);
+</script>
+
+</body>
+</html>
