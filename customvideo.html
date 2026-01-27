@@ -15,6 +15,7 @@
   position: relative;
   max-width: 800px;
   margin: 40px auto;
+  
 }
 
 /* ===== VIDEO ===== */
@@ -25,12 +26,15 @@
 
 /* ===== CONTROLS CONTAINER ===== */
 .player__controls {
-  position: absolute;
+    position: absolute;
   bottom: 0;
-  left: 0;
   width: 100%;
-  background: rgba(0,0,0,0.6);
-  padding: 10px;
+  background: rgba(179, 8, 8, 0.6);
+
+  padding: 0; /* remove padding */
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* spacing instead of padding */
   box-sizing: border-box;
 }
 
@@ -54,6 +58,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
+
 }
 
 /* ===== BUTTONS ===== */
@@ -68,6 +73,7 @@
 /* ===== SLIDERS ===== */
 input[type="range"] {
   width: 100px;
+  cursor: pointer;
 }
 </style>
 </head>
@@ -76,7 +82,7 @@ input[type="range"] {
 
     <div>
            
-  <video class="viewer" controls src="Dubia.mp4"></video>
+  <video class="viewer" controls src="Dubia.mp4"></video> <!--normal controls of video-->
     </div>
 
 <div class="player">
@@ -117,7 +123,7 @@ const ranges = player.querySelectorAll('input[type="range"]');
 
 // ===== FUNCTIONS =====
 function togglePlay() {
-  video.paused ? video.play() : video.pause();
+  video.paused ? video.play() : video.pause(); // for play or stop the video 
 }
 
 function updateButton() {
@@ -125,7 +131,7 @@ function updateButton() {
 }
 
 function skip() {
-  video.currentTime += parseFloat(this.dataset.skip);
+  video.currentTime += parseFloat(this.dataset.skip); // for 10s forward video and 25 s backward the video dataset skip value is="10" covert in number and add to current time of video
 }
 
 function handleRangeUpdate() {
@@ -133,21 +139,21 @@ function handleRangeUpdate() {
 }
 
 function handleProgress() {
-  const percent = (video.currentTime / video.duration) * 100;
+  const percent = (video.currentTime / video.duration) * 100; // like progress
   progressBar.style.flexBasis = `${percent}%`;
 }
 
 // ===== EVENTS =====
-video.addEventListener('click', togglePlay);
-toggle.addEventListener('click', togglePlay);
+video.addEventListener('click', togglePlay); // for play or stop the video
+toggle.addEventListener('click', togglePlay); // for play or stop the video
 
-video.addEventListener('play', updateButton);
-video.addEventListener('pause', updateButton);
+video.addEventListener('play', updateButton);  // to update the toggle button when video is on or off
+video.addEventListener('pause', updateButton); // to update the toggle button when video is on or off
 
 skipButtons.forEach(btn => btn.addEventListener('click', skip));
-ranges.forEach(range => range.addEventListener('input', handleRangeUpdate));
+ranges.forEach(range => range.addEventListener('input', handleRangeUpdate)); // to control speed and volume
 
-video.addEventListener('timeupdate', handleProgress);
+video.addEventListener('timeupdate', handleProgress); // to control the progress bar and progress filled 
 </script>
 
 </body>

@@ -1,0 +1,65 @@
+
+
+
+<!--CSS Text Shadow Mouse Move Effect (27/01/25)-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #f5f5f5;
+}
+        /* .hero{
+            background-color: red;
+           
+        } */
+        h1{
+            text-shadow: 10px 20px 0 rgba(0, 0, 0, 1);
+            font-size: 100px;
+        }
+    </style>
+</head>
+<body>
+    <div class="hero">
+        <h1>
+            Hello India!!
+        </h1>
+
+    </div>
+    <script>
+        const hero= document.querySelector('.hero');
+        const text=hero.querySelector('h1');
+        function shadow(e){
+            // console.log(e);
+            // console.count(e);
+            // const width=hero.offsetWidth;
+            // const height=hero.offsetHeight;
+            // console.log(width);
+            // console.log(height);
+
+            const {offsetWidth:width,offsetHeight:height}=hero;
+            let {offsetX:x,offsetY:y}=e;
+            // console.log(this,e.target);
+            if(this!==e.target){
+                x=x+e.target.offsetLeft;
+                y=y+e.target.offsetTop;
+
+            }
+            const walk = 60; // amount of shadow movement
+            const xwalk=Math.round((x/ width*walk)-(walk/2));
+            const ywalk=Math.round((y/ height*walk)-(walk/2));
+            // console.log(xwalk,ywalk);
+            text.style.textShadow=` ${xwalk}px ${ywalk}px 12px rgba(0,0,0,0.4) `;
+
+        }
+        hero.addEventListener('mousemove',shadow);
+    </script>
+</body>
+</html>
