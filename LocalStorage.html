@@ -1,0 +1,161 @@
+
+
+
+<!-- Local Storage and Event Delegation  28/01/26-->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh; /* take a full height of screen */
+        }
+        .wrapper{
+            background-color: gray;
+            box-shadow: 0 10px 10px rgba(0,0,0,0.2);
+             border-radius: 6px;
+             padding: 20px;
+             }
+             h2{
+                text-align: center;
+                margin: 0;
+             }
+             .plates{
+                margin: 0;
+                padding: 0;
+                text-align: left;
+                list-style: none;
+             }
+             .plates li{
+                border-bottom: 2px solid rgba(0,0,0,0.3);
+                padding: 10px 0;
+                display: flex;
+             }
+             .plates label{
+                flex: 1;
+                cursor: pointer;
+             }
+             .plates input{
+                display: none;
+             }
+            .plates input:checked + label::before{
+                content: '✔';
+             }
+             .add-items{
+                margin-top: 20px;
+             }
+             .add-items input{
+                padding: 10px;
+                outline: 0;
+                border: 1px solid red;
+             }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <h2>Local Tapas</h2>
+        <p></p>
+        <ul class="plates">  <!-- this is for list after submitmitting-->
+            <li>loading Tapas.....</li>
+
+        </ul>
+        
+    <form class="add-item">
+        <input type="text" name="item" placeholder="Item Name" >
+        <input type="submit" value="+ Add Item">
+    </form>
+    </div>
+  <script>
+    //elements
+    const addItems=document.querySelector('.add-item');
+    // const items=[]; // created array to store input text in an array
+
+    const items = JSON.parse(localStorage.getItem('items')) || [];
+    const itemsList=document.querySelector('.plates');
+
+    //funtion
+    function addItem(e){
+        // console.log("hello"); // after submit event the page is refreshing every time so,
+        e.preventDefault(); //e.preventDefault help to do not reload the page .
+        // console.log("hi");
+        // now the input text should be put in a object so created a object item.....
+        const text=(addItems.querySelector('[name=item]')).value;
+
+        const item={ // object created
+            // text:'Item - name', // we want to store the input text
+            text,
+            done:false
+        }
+        // console.log(item);
+        this.reset();
+        // items.push(item);
+        // // console.log(items);
+        // populateList(items,itemsList)
+
+
+        items.push(item);
+localStorage.setItem('items', JSON.stringify(items));
+populateList(items, itemsList);
+
+
+    }
+
+    function populateList(plates=[],platesList){
+        platesList.innerHTML=plates.map((plate,i)=>{
+            return `
+            <li>
+                  <input type="checkbox" data-index="${i}" id="item${i}" ${plate.done ? 'checked' : ''}>
+              <label for="item${i}">${plate.text}</label>
+              <button class="delete" data-index="${i}">❌</button>
+            </li>    
+
+            `;
+        }).join(' ')
+
+    }
+
+
+
+    // toggle checkbox (event delegation)
+function toggleDone(e){
+    if(!e.target.matches('input')) return;
+
+    const index = e.target.dataset.index;
+    items[index].done = !items[index].done;
+    localStorage.setItem('items', JSON.stringify(items));
+    populateList(items, itemsList);
+}
+
+
+// to delete  function 
+
+function deleteItem(e){
+  if(!e.target.matches('.delete')) return;
+
+  const index = e.target.dataset.index;
+  items.splice(index, 1);
+
+  localStorage.setItem('items', JSON.stringify(items));
+  populateList(items, itemsList);
+}
+
+// events
+addItems.addEventListener('submit', addItem);
+itemsList.addEventListener('click', toggleDone);
+itemsList.addEventListener('click', deleteItem);
+
+// load existing data on refresh
+populateList(items, itemsList);
+
+  
+
+  </script>
+</body>
+</html>
