@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Ultra Advanced Follow Along</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  height: 100vh;
+  background: linear-gradient(120deg, #7b2ff7, #00c6ff, #43cea2);
+  overflow-x: hidden;
+}
+
+/* NAV */
+nav {
+  position: relative;
+  padding-top: 60px;
+}
+
+/* MENU */
+.menu {
+  display: flex;
+  justify-content: center;
+  list-style: none;
+  padding: 0;
+}
+
+.menu li {
+  margin: 0 25px;
+}
+
+.menu a {
+  text-decoration: none;
+  color: #111;
+  font-size: 18px;
+  padding: 10px 15px;
+  display: inline-block;
+  position: relative;
+  z-index: 2;
+  transition: color 0.2s;
+}
+
+.menu a.active {
+  color: black;
+  font-weight: bold;
+}
+
+/* HIGHLIGHT */
+.highlight {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: 20px;
+  background: rgba(255,255,255,0.7);
+  backdrop-filter: blur(10px);
+  box-shadow:
+    0 10px 30px rgba(0,0,0,0.25),
+    0 0 20px rgba(255,255,255,0.6);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* CONTENT */
+.content {
+  max-width: 800px;
+  margin: 120px auto;
+  padding: 0 20px;
+  line-height: 1.7;
+  font-size: 18px;
+  color: #111;
+}
+
+/* MOBILE */
+@media (max-width: 600px) {
+  .menu {
+    flex-wrap: wrap;
+  }
+
+  .menu li {
+    margin: 10px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<nav>
+  <ul class="menu">
+    <li><a href="#" class="active">Home</a></li>
+    <li><a href="#">Order Status</a></li>
+    <li><a href="#">Tweets</a></li>
+    <li><a href="#">Read Our History</a></li>
+    <li><a href="#">Contact Us</a></li>
+  </ul>
+
+  <span class="highlight"></span>
+</nav>
+
+<div class="content">
+  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Est explicabo unde natus necessitatibus esse obcaecati distinctio, aut itaque, qui vitae!</p>
+
+  <p>Aspernatur sapiente quae sint soluta modi, atque praesentium laborum pariatur earum quaerat cupiditate consequuntur facilis ullam dignissimos, aperiam quam veniam.</p>
+
+  <p>Cum ipsum quod, incidunt sit ex tempora placeat maxime sapiente, molestias rem adipisci, doloremque fugiat. Ipsam, maiores, quidem.</p>
+</div>
+
+<script>
+const links = document.querySelectorAll('.menu a');
+const highlight = document.querySelector('.highlight');
+
+let currentX = 0, currentY = 0, currentW = 0, currentH = 0;
+let targetX = 0, targetY = 0, targetW = 0, targetH = 0;
+
+/* Smooth animation (LERP) */
+function animate() {
+  currentX += (targetX - currentX) * 0.15;
+  currentY += (targetY - currentY) * 0.15;
+  currentW += (targetW - currentW) * 0.15;
+  currentH += (targetH - currentH) * 0.15;
+
+  highlight.style.transform = `translate(${currentX}px, ${currentY}px)`;
+  highlight.style.width = currentW + "px";
+  highlight.style.height = currentH + "px";
+
+  requestAnimationFrame(animate);
+}
+animate();
+
+/* Hover effect */
+links.forEach(link => {
+  link.addEventListener('mouseenter', function(e) {
+    const rect = this.getBoundingClientRect();
+
+    targetX = rect.left + window.scrollX;
+    targetY = rect.top + window.scrollY;
+    targetW = rect.width;
+    targetH = rect.height;
+  });
+
+  /* Magnetic effect */
+  link.addEventListener('mousemove', function(e) {
+    const rect = this.getBoundingClientRect();
+    const offsetX = (e.clientX - rect.left - rect.width/2) * 0.2;
+    const offsetY = (e.clientY - rect.top - rect.height/2) * 0.2;
+
+    targetX = rect.left + offsetX;
+    targetY = rect.top + offsetY;
+  });
+
+  /* Click active */
+  link.addEventListener('click', function() {
+    links.forEach(l => l.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+
+/* Default position */
+window.addEventListener('load', () => {
+  const active = document.querySelector('.menu a.active');
+  const rect = active.getBoundingClientRect();
+
+  targetX = rect.left;
+  targetY = rect.top;
+  targetW = rect.width;
+  targetH = rect.height;
+});
+</script>
+
+</body>
+</html>

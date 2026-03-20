@@ -1,0 +1,53 @@
+
+
+<!--Breadcrumbs tell you where you are on a website and how you reached that page.-->
+<!--This breadcrumb shows the navigation path of the current page on the website.-->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BreadCrumbs</title>
+    <style>
+        ul{
+              justify-content: space-between;
+            display: flex;
+        }
+        /* Display list items side by side */
+        ul li{
+           display: inline;
+           font-size: 18px;
+          
+        }
+        /* Add a slash symbol (/) before/behind each list item */
+ul.BreadCrumbs li+li:before { /* li+li not the first list means that list select that comes after another list*/
+  padding: 8px;
+  color: black;
+  content: "/\00a0";  /* \00a0 means add a space after slash */
+}
+
+/* Add a color to all links inside the list */
+ul.BreadCrumbs li a {
+  color: #0275d8;
+  text-decoration: none;
+}
+ul.BreadCrumbs li a:hover{
+    text-decoration: underline;
+    color: red;
+}
+    </style>
+</head>
+<body>
+    <h1>Breadcrumbs</h1>
+    <ul class="BreadCrumbs">
+        <li><a href="#">Home</a></li>
+        <li><a href="#">properties</a></li>
+        <li><a href="#">pictures</a></li>
+        <li><a href="#">temperature</a></li>
+        <li>Mumbai</li>
+
+    </ul>
+</body>
+</html>

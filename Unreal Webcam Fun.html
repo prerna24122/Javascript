@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>unreal webcam fun</title>
+    <style>
+     /* ===== GENERAL PAGE STYLE ===== */
+body{
+  margin:0;
+  font-family:Arial, Helvetica, sans-serif;
+  background:#0f172a;
+  color:white;
+}
+
+/* ===== HIDE ELEMENTS ===== */
+.hidden{
+  display:none;
+}
+
+/* ===== PERMISSION SCREEN ===== */
+.perm-screen{
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+}
+
+.perm-title{
+  font-size:32px;
+  margin-bottom:10px;
+}
+
+.perm-desc{
+  color:#cbd5f5;
+  margin-bottom:20px;
+}
+
+.btn-allow{
+  padding:12px 20px;
+  border:none;
+  border-radius:8px;
+  background:#3b82f6;
+  color:white;
+  font-size:16px;
+  cursor:pointer;
+}
+
+.btn-allow:hover{
+  background:#2563eb;
+}
+
+/* ===== TOP BAR ===== */
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:15px 25px;
+  background:#111827;
+}
+
+.logo{
+  font-size:22px;
+}
+
+.tagline{
+  color:#9ca3af;
+}
+
+/* ===== MAIN LAYOUT ===== */
+.layout{
+  display:flex;
+  gap:20px;
+  padding:20px;
+}
+
+/* ===== LEFT COLUMN ===== */
+.left-col{
+  flex:2;
+}
+
+/* ===== CONTROLS BAR ===== */
+.controls-bar{
+  display:flex;
+  align-items:center;
+  gap:15px;
+  margin-bottom:15px;
+}
+
+/* TAKE PHOTO BUTTON */
+.btn-snap{
+  padding:10px 18px;
+  background:#22c55e;
+  border:none;
+  border-radius:8px;
+  font-size:15px;
+  color:white;
+  cursor:pointer;
+}
+
+.btn-snap:disabled{
+  background:#64748b;
+  cursor:not-allowed;
+}
+
+/* COUNTDOWN */
+.countdown{
+  font-size:26px;
+  font-weight:bold;
+  color:#facc15;
+}
+
+/* EFFECT BUTTONS */
+.fx-pills{
+  display:flex;
+  gap:10px;
+}
+
+.fx-pill{
+  border:none;
+  padding:8px 12px;
+  border-radius:20px;
+  background:#1f2937;
+  color:white;
+  cursor:pointer;
+}
+
+.fx-pill:hover{
+  background:#374151;
+}
+
+.fx-pill.on{
+  background:#facc15;
+  color:black;
+}
+
+/* ===== VIDEO AREA ===== */
+.video-area{
+  position:relative;
+  border-radius:10px;
+  overflow:hidden;
+}
+
+/* HIDDEN VIDEO SOURCE */
+video{
+  display:none;
+}
+
+/* CANVAS DISPLAY */
+canvas{
+  width:100%;
+  border-radius:10px;
+}
+
+/* FLASH EFFECT */
+.flash{
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:white;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity 0.6s;
+}
+
+.flash.pop{
+  opacity:1;
+}
+
+/* ===== PHOTO STRIP ===== */
+.strip{
+  flex:1;
+  background:#111827;
+  padding:15px;
+  border-radius:10px;
+}
+
+.strip-header{
+  font-weight:bold;
+  margin-bottom:10px;
+}
+
+.strip-empty{
+  color:#9ca3af;
+}
+
+/* PHOTO THUMBNAILS */
+.strip img{
+  width:100%;
+  border-radius:8px;
+  margin-bottom:10px;
+}
+    </style>
+</head>
+<body>
+      <!-- All visible elements: text, buttons, images, canvas, video etc. -->
+          <!-- JS finds elements using: document.getElementById('name') -->
+
+          <!--Permission screen or  webcam app--> 
+
+         <div id="permScreen" class="perm-screen">  <!--camera icon, title, instructions,allow camera button-->
+            <div class="perm-icon">
+                <svg>...</svg>
+            </div>
+            <h1 class="perm-title">Webcam Fun</h1>
+             <!-- Instructions paragraph -->
+              <p class="perm-desc">
+                Click below — your browser will ask for camera permission.
+            </p> <!--Tell the user they must allow camera access.-->
+            <button id="allowBtn" class="btn-allow">
+                Allow Camera Access <!--When clicked → camera permission request starts.-->
+            </button>
+            <!-- Add Error Message Area create an empty paragraph.-->
+             <p>Camera permission denied</p>
+<!-- 
+
+ SECTION 2: THE MAIN APP
+       The actual webcam app.
+       class="hidden" = CSS sets display:none so it's invisible.
+ 
+       After camera permission is granted:
+         document.getElementById('app')
+           .classList.remove('hidden')
+       This removes display:none and the app appears. -->
+  <div id="app" class="app hidden">
+    <header class="topbar">
+  <h1 class="logo">📸 Webcam Fun</h1>
+  <span class="tagline">getUserMedia + Canvas API</span>
+</header>
+
+
+
+    <!-- ── MAIN LAYOUT ────────────────────────── -->
+   
+    <div class="layout">
+ 
+      <!-- LEFT COLUMN -->
+      <div class="left-col">
+ 
+        <!-- CONTROLS BAR (sits above the video) -->
+        <div class="controls-bar">
+ 
+          <!-- TAKE PHOTO BUTTON
+               disabled attribute = greyed out, unclickable.
+               JS removes disabled once camera is running:
+                 snapBtn.disabled = false
+ 
+               When clicked: JS runs takePhoto() which does:
+                 3 second countdown → white flash → save photo
+          -->
+          <button id="snapBtn" class="btn-snap" disabled>
+            📷 Take Photo
+          </button>
+ 
+         
+          <span id="countdown" class="countdown hidden">3</span>
+ 
+        
+          <div class="fx-pills">
+            <button class="fx-pill" data-fx="redEffect">🔴 Red</button>
+            <button class="fx-pill" data-fx="rgbSplit">🌈 Split</button>
+            <button class="fx-pill" data-fx="greenScreen">🟢 Green</button>
+          </div>
+ 
+        </div>
+      
+        <div class="video-area">
+ 
+       
+          <video id="vid" autoplay muted playsinline></video>
+ 
+         
+          <canvas id="output"></canvas>
+ 
+       
+          <div id="flash" class="flash"></div>
+ 
+        </div>
+        <!-- end .video-area -->
+ 
+      </div>
+      <!-- end .left-col -->
+ 
+ 
+      <!-- RIGHT COLUMN: PHOTO STRIP
+           Empty column — photos are added by JavaScript.
+ 
+           When user takes a photo, JS does:
+             const img = document.createElement('img')
+             img.src = canvas.toDataURL('image/jpeg')
+             strip.insertBefore(img, strip.firstChild)
+ 
+           Photos appear here as small thumbnails.
+           Clicking a thumbnail downloads the full photo.
+      -->
+      <div id="strip" class="strip">
+ 
+        <div class="strip-header">PHOTOS</div>
+ 
+        <!-- Empty state text.
+             Shown before any photos are taken.
+             JS removes this on first photo:
+               document.getElementById('stripEmpty').remove()
+        -->
+        <p id="stripEmpty" class="strip-empty">
+          No photos yet
+        </p>
+ 
+      </div>
+      <!-- end .strip -->
+ 
+    </div>
+    <!-- end .layout -->
+ 
+  </div>
+  <!-- end #app -->
+ 
+ 
+<script>
+
+const allowBtn = document.getElementById("allowBtn");
+const permScreen = document.getElementById("permScreen");
+const app = document.getElementById("app");
+
+const video = document.getElementById("vid");
+const canvas = document.getElementById("output");
+const ctx = canvas.getContext("2d");
+
+const snapBtn = document.getElementById("snapBtn");
+const countdown = document.getElementById("countdown");
+const flash = document.getElementById("flash");
+
+const strip = document.getElementById("strip");
+const stripEmpty = document.getElementById("stripEmpty");
+
+const fxButtons = document.querySelectorAll(".fx-pill");
+
+let activeEffects = new Set();
+
+
+// ===== CAMERA PERMISSION BUTTON =====
+
+allowBtn.addEventListener("click", async () => {
+
+  try {
+
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: true,
+      audio: false
+    }); // alow camera to open CAMERA API IS HERE
+
+    video.srcObject = stream;
+
+    video.onloadedmetadata = () => {
+
+      video.play();
+
+      // set canvas size
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+
+      drawToCanvas();
+
+      // enable photo button
+      snapBtn.disabled = false;
+
+      // hide permission screen
+      permScreen.classList.add("hidden");
+
+      // show app
+      app.classList.remove("hidden");
+
+    };
+
+  } catch (err) {
+
+    alert("Camera permission denied");
+
+  }
+
+});
+
+
+// ===== DRAW VIDEO TO CANVAS =====
+
+function drawToCanvas() {
+
+  ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+  let pixels = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+  if (activeEffects.has("redEffect")) {
+    pixels = redEffect(pixels);
+  }
+
+  if (activeEffects.has("rgbSplit")) {
+    pixels = rgbSplit(pixels);
+  }
+
+  ctx.putImageData(pixels, 0, 0);
+
+  requestAnimationFrame(drawToCanvas);
+
+}
+
+
+// ===== TAKE PHOTO =====
+
+snapBtn.addEventListener("click", startCountdown);
+
+function startCountdown() {
+
+  let count = 3;
+
+  countdown.classList.remove("hidden");
+  countdown.textContent = count;
+
+  const timer = setInterval(() => {
+
+    count--;
+    countdown.textContent = count;
+
+    if (count === 0) {
+
+      clearInterval(timer);
+      countdown.classList.add("hidden");
+
+      takePhoto();
+
+    }
+
+  }, 1000);
+
+}
+
+
+// ===== CAPTURE PHOTO =====
+
+function takePhoto() {
+
+  flash.classList.add("pop");
+
+  setTimeout(() => {
+    flash.classList.remove("pop");
+  }, 50);
+
+  const data = canvas.toDataURL("image/jpeg");
+
+  const img = document.createElement("img");
+  img.src = data;
+
+  strip.insertBefore(img, strip.firstChild);
+
+  if (stripEmpty) {
+    stripEmpty.remove();
+  }
+
+}
+
+
+// ===== EFFECT BUTTONS =====
+
+fxButtons.forEach(btn => {
+
+  btn.addEventListener("click", () => {
+
+    const fx = btn.dataset.fx;
+
+    if (activeEffects.has(fx)) {
+
+      activeEffects.delete(fx);
+      btn.classList.remove("on");
+
+    } else {
+
+      activeEffects.add(fx);
+      btn.classList.add("on");
+
+    }
+
+  });
+
+});
+
+
+// // ===== RED EFFECT =====
+
+function redEffect(pixels) {
+
+  for (let i = 0; i < pixels.data.length; i += 4) {
+
+    pixels.data[i] += 100;     // red
+    pixels.data[i + 1] -= 50;  // green
+    pixels.data[i + 2] += 50;  // blue
+
+  }
+
+  return pixels;
+
+}
+
+
+// // ===== RGB SPLIT EFFECT =====
+
+ function rgbSplit(pixels) {
+
+  for (let i = 0; i < pixels.data.length; i += 4) {
+
+    pixels.data[i - 150] = pixels.data[i];      // red
+     pixels.data[i + 500] = pixels.data[i + 1];  // green
+    pixels.data[i - 550] = pixels.data[i + 2];  // blue
+
+  }
+
+  return pixels;
+
+}
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

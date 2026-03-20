@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Advanced Speed Controller</title>
+
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #0f172a;
+      font-family: sans-serif;
+      color: white;
+    }
+
+    .player {
+      display: flex;
+      gap: 25px;
+      align-items: center;
+    }
+
+    video {
+      width: 550px;
+      border-radius: 12px;
+    }
+
+    .speed-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .label {
+      font-size: 12px;
+      opacity: 0.7;
+    }
+
+    .speed {
+      height: 320px;
+      width: 60px;
+      border-radius: 30px;
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px);
+      position: relative;
+      cursor: pointer;
+      overflow: hidden;
+    }
+
+    .speed-bar {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 50%;
+      background: linear-gradient(180deg, #9333ea, #ec4899);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      transition: height 0.1s ease-out;
+    }
+
+    .speed-value {
+      position: absolute;
+      top: -30px;
+      background: #000;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 12px;
+    }
+
+  </style>
+</head>
+<body>
+
+<div class="player">
+  <video class="video" controls>
+    <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+  </video>
+
+  <div class="speed-container">
+    <div class="label">2x</div>
+
+    <div class="speed">
+      <div class="speed-bar">
+        <span class="speed-value">1x</span>
+      </div>
+    </div>
+
+    <div class="label">0.5x</div>
+  </div>
+</div>
+
+<script>
+  const speed = document.querySelector('.speed');
+  const bar = document.querySelector('.speed-bar');
+  const value = document.querySelector('.speed-value');
+  const video = document.querySelector('.video');
+
+  const min = 0.5;
+  const max = 2;
+
+  let isDragging = false;
+
+  function updateSpeed(y) {
+    const rect = speed.getBoundingClientRect();
+    let offsetY = y - rect.top;
+
+    // clamp
+    if (offsetY < 0) offsetY = 0;
+    if (offsetY > rect.height) offsetY = rect.height;
+
+    const percent = offsetY / rect.height;
+    const playbackRate = percent * (max - min) + min;
+
+    bar.style.height = `${percent * 100}%`;
+    value.textContent = playbackRate.toFixed(2) + 'x';
+    video.playbackRate = playbackRate;
+  }
+
+  // Mouse events
+  speed.addEventListener('mousedown', () => isDragging = true);
+  window.addEventListener('mouseup', () => isDragging = false);
+
+  window.addEventListener('mousemove', (e) => {
+    if (isDragging) updateSpeed(e.clientY);
+  });
+
+  // Click support
+  speed.addEventListener('click', (e) => {
+    updateSpeed(e.clientY);
+  });
+
+  // Touch support (mobile)
+  speed.addEventListener('touchstart', () => isDragging = true);
+
+  window.addEventListener('touchend', () => isDragging = false);
+
+  window.addEventListener('touchmove', (e) => {
+    if (isDragging) {
+      updateSpeed(e.touches[0].clientY);
+    }
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Advanced Drag Scroll 3D</title>
+
+<style>
+body {
+  margin: 0;
+  background: #0f172a;
+  overflow: hidden;
+  font-family: Arial, sans-serif;
+}
+
+/* Container */
+.slider {
+  display: flex;
+  align-items: center;
+  height: 100vh;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  perspective: 1000px;
+  cursor: grab;
+  padding: 0 100px;
+}
+
+.slider::-webkit-scrollbar {
+  display: none;
+}
+
+/* Cards */
+.card {
+  flex: 0 0 260px;
+  height: 320px;
+  margin: 0 20px;
+  border-radius: 20px;
+  scroll-snap-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  color: white;
+  transition: transform 0.3s, opacity 0.3s;
+  transform-style: preserve-3d;
+}
+
+/* Colors */
+.card:nth-child(1){background:#6a11cb;}
+.card:nth-child(2){background:#2575fc;}
+.card:nth-child(3){background:#ff7e5f;}
+.card:nth-child(4){background:#43cea2;}
+.card:nth-child(5){background:#f7971e;}
+.card:nth-child(6){background:#00c6ff;}
+.card:nth-child(7){background:#f953c6;}
+.card:nth-child(8){background:#11998e;}
+
+/* Active Center Effect */
+.card.active {
+  transform: scale(1.2) rotateY(0deg);
+  opacity: 1;
+}
+
+.card:not(.active) {
+  opacity: 0.6;
+}
+
+/* Drag cursor */
+.slider:active {
+  cursor: grabbing;
+}
+</style>
+</head>
+
+<body>
+
+<div class="slider" id="slider">
+  <div class="card">01</div>
+  <div class="card">02</div>
+  <div class="card">03</div>
+  <div class="card">04</div>
+  <div class="card">05</div>
+  <div class="card">06</div>
+  <div class="card">07</div>
+  <div class="card">08</div>
+</div>
+
+<script>
+const slider = document.getElementById("slider");
+const cards = document.querySelectorAll(".card");
+
+let isDown = false;
+let startX;
+let scrollLeft;
+let velocity = 0;
+let momentumID;
+
+/* Drag Start */
+slider.addEventListener("mousedown", (e) => {
+  isDown = true;
+  startX = e.pageX;
+  scrollLeft = slider.scrollLeft;
+  cancelAnimationFrame(momentumID);
+});
+
+/* Drag End */
+slider.addEventListener("mouseup", () => {
+  isDown = false;
+  momentumScroll();
+});
+
+slider.addEventListener("mouseleave", () => {
+  isDown = false;
+});
+
+/* Drag Move */
+slider.addEventListener("mousemove", (e) => {
+  if (!isDown) return;
+
+  const x = e.pageX;
+  const walk = (x - startX);
+  velocity = walk * 0.2;
+
+  slider.scrollLeft = scrollLeft - walk;
+});
+
+/* Momentum Effect */
+function momentumScroll() {
+  slider.scrollLeft -= velocity;
+  velocity *= 0.95;
+
+  if (Math.abs(velocity) > 0.5) {
+    momentumID = requestAnimationFrame(momentumScroll);
+  }
+}
+
+/* Touch Support */
+slider.addEventListener("touchstart", (e) => {
+  startX = e.touches[0].pageX;
+  scrollLeft = slider.scrollLeft;
+});
+
+slider.addEventListener("touchmove", (e) => {
+  const x = e.touches[0].pageX;
+  const walk = (x - startX);
+  slider.scrollLeft = scrollLeft - walk;
+});
+
+/* 3D Rotate Effect */
+function updateCards() {
+  const center = window.innerWidth / 2;
+
+  cards.forEach(card => {
+    const rect = card.getBoundingClientRect();
+    const cardCenter = rect.left + rect.width / 2;
+    const distance = cardCenter - center;
+
+    const rotate = distance / 20;
+    const scale = 1 - Math.abs(distance) / 1000;
+
+    card.style.transform = `rotateY(${rotate}deg) scale(${scale})`;
+
+    if (Math.abs(distance) < 100) {
+      card.classList.add("active");
+    } else {
+      card.classList.remove("active");
+    }
+  });
+}
+
+slider.addEventListener("scroll", updateCards);
+window.addEventListener("load", updateCards);
+</script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- Basic-->
+
+<!-- 
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Click & Drag Scroll</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #111;
+    }
+
+    .items {
+      display: flex;
+      overflow-x: scroll;
+      height: 100vh;
+      align-items: center;
+      cursor: grab;
+      scroll-behavior: smooth;
+      padding: 20px;
+    }
+
+    .items:active {
+      cursor: grabbing;
+    }
+
+    .items::-webkit-scrollbar {
+      display: none;
+    }
+
+    .item {
+      min-width: 220px;
+      height: 300px;
+      margin: 0 15px;
+      border-radius: 12px;
+      color: white;
+      font-size: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+      transition: transform 0.3s;
+    }
+
+    .item:hover {
+      transform: scale(1.05);
+    }
+
+    /* Different colors */
+    .item:nth-child(1) { background: #6a11cb; }
+    .item:nth-child(2) { background: #2575fc; }
+    .item:nth-child(3) { background: #ff7e5f; }
+    .item:nth-child(4) { background: #43cea2; }
+    .item:nth-child(5) { background: #f7971e; }
+    .item:nth-child(6) { background: #00c6ff; }
+    .item:nth-child(7) { background: #f953c6; }
+    .item:nth-child(8) { background: #11998e; }
+    .item:nth-child(9) { background: #ee0979; }
+    .item:nth-child(10) { background: #8360c3; }
+  </style>
+</head>
+
+<body>
+
+  <div class="items" id="slider">
+    <div class="item">01</div>
+    <div class="item">02</div>
+    <div class="item">03</div>
+    <div class="item">04</div>
+    <div class="item">05</div>
+    <div class="item">06</div>
+    <div class="item">07</div>
+    <div class="item">08</div>
+    <div class="item">09</div>
+    <div class="item">10</div>
+  </div>
+
+  <script>
+    const slider = document.getElementById("slider");
+
+    let isDown = false;
+    let startX;
+    let scrollLeft;
+
+    slider.addEventListener("mousedown", (e) => {
+      isDown = true;
+      slider.classList.add("active");
+      startX = e.pageX - slider.offsetLeft;
+      scrollLeft = slider.scrollLeft;
+    });
+
+    slider.addEventListener("mouseleave", () => {
+      isDown = false;
+      slider.classList.remove("active");
+    });
+
+    slider.addEventListener("mouseup", () => {
+      isDown = false;
+      slider.classList.remove("active");
+    });
+
+    slider.addEventListener("mousemove", (e) => {
+      if (!isDown) return;
+      e.preventDefault();
+
+      const x = e.pageX - slider.offsetLeft;
+      const walk = (x - startX) * 2; // scroll speed
+      slider.scrollLeft = scrollLeft - walk;
+    });
+
+    /* Mobile Touch Support */
+    slider.addEventListener("touchstart", (e) => {
+      startX = e.touches[0].pageX;
+      scrollLeft = slider.scrollLeft;
+    });
+
+    slider.addEventListener("touchmove", (e) => {
+      const x = e.touches[0].pageX;
+      const walk = (x - startX) * 2;
+      slider.scrollLeft = scrollLeft - walk;
+    });
+  </script>
+
+</body>
+</html> -->

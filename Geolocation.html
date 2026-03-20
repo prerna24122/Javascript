@@ -1,0 +1,58 @@
+<!--Geolocation based Speedometer and Compass-->
+<!-- What GPS details it gives
+latitude → where you are
+longitude → where you are
+speed → how fast you move
+heading → which direction you move -->
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speed & Compass</title>
+    <style>
+        .compass { width: 150px; transition: transform 0.5s; }
+        .speed, .coords { font-size: 1.5rem; margin-top: 15px; }
+        body { text-align: center; font-family: Arial; }
+    </style>
+</head>
+<body>
+    <h1>Compass & Speed</h1>
+    <img src="compass.png" class="compass" alt="Compass">
+    <div class="speed">0 km/h</div>
+    <div class="coords">Lat: 0, Lon: 0</div>
+
+    <script>
+        const speedDisplay = document.querySelector('.speed');
+        const compass = document.querySelector('.compass');
+        const coordsDisplay = document.querySelector('.coords');
+
+        if (navigator.geolocation) {
+            // navigator.geolocation.getCurrentPosition((pos=>){})
+            navigator.geolocation.watchPosition((pos) => {
+                const speed = pos.coords.speed;
+                const heading = pos.coords.heading;
+                const lat = pos.coords.latitude;
+                const lon = pos.coords.longitude;
+
+                // Show speed in km/h
+                speedDisplay.innerText = speed ? (speed * 3.6).toFixed(0) + " km/h" : "0 km/h";
+
+                // Rotate compass if heading is available
+                if (heading !== null) compass.style.transform = `rotate(${-heading}deg)`;
+
+                // Show latitude and longitude
+                coordsDisplay.innerText = `Lat: ${lat.toFixed(5)}, Lon: ${lon.toFixed(5)}`;
+            });
+        } else {
+            alert("Geolocation not supported");
+        }
+    </script>
+</body>
+</html>
+
+
+

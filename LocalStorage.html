@@ -2,7 +2,7 @@
 
 
 <!-- Local Storage and Event Delegation  28/01/26-->
-
+<!--It adds items, shows them, checks/unchecks them, deletes them, and remembers them after refresh.-->
 
 <!DOCTYPE html>
 <html lang="en">
@@ -140,7 +140,7 @@ function deleteItem(e){
   if(!e.target.matches('.delete')) return;
 
   const index = e.target.dataset.index;
-  items.splice(index, 1);
+  items.splice(index, 1);  // array.splice(start, deleteCount, item1, item2, ...); is to remove ,add  or replace items in an array at a specific position.
 
   localStorage.setItem('items', JSON.stringify(items));
   populateList(items, itemsList);

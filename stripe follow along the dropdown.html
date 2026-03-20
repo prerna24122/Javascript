@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Perfect Stripe Dropdown</title>
+
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: sans-serif;
+  background: linear-gradient(120deg, purple, blue, green);
+  min-height: 100vh;
+}
+
+/* NAV */
+.nav {
+  display: flex;
+  justify-content: center;
+  padding: 40px;
+  position: relative;
+}
+
+.menu {
+  display: flex;
+  gap: 40px;
+  list-style: none;
+  position: relative;
+}
+
+.menu li {
+  position: relative;
+}
+
+.menu a {
+  color: yellow;
+  text-decoration: none;
+  font-weight: bold;
+  padding: 10px 15px;
+  display: inline-block;
+}
+
+/* DROPDOWN */
+.dropdown {
+  position: absolute;
+  top: 45px;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  z-index: 100;
+  min-width: 200px;
+}
+
+.trigger-enter .dropdown {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(-50%) translateY(0px);
+}
+
+/* CONTENT */
+.dropdownContent {
+  padding: 20px;
+  min-width: 260px;
+  list-style: none;
+}
+
+.dropdownContent p {
+  color: #333;
+  margin: 0;
+}
+
+.dropdownContent li {
+  list-style: none;
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+  color: #333;
+}
+
+.dropdownContent li:last-child {
+  border-bottom: none;
+}
+
+.dropdownContent li span {
+  color: goldenrod;
+  font-weight: bold;
+}
+
+/* WHITE SLIDING BACKGROUND — THE FIX:
+   Must have top:0 and left:0 so translate() starts from nav's top-left corner,
+   not from some random inherited position. */
+.dropdownBackground {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+  transition: transform 0.25s ease, width 0.25s ease, height 0.25s ease, opacity 0.2s ease;
+  transform-origin: top center;
+  opacity: 0;
+  z-index: 99;
+  pointer-events: none;
+}
+
+/* ARROW — same fix: top:0; left:0 */
+.arrow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 20px;
+  height: 20px;
+  background: white;
+  opacity: 0;
+  z-index: 98;
+  transition: transform 0.25s ease, opacity 0.2s ease;
+  pointer-events: none;
+}
+</style>
+</head>
+
+<body>
+
+<nav class="nav">
+  <ul class="menu">
+
+    <li>
+      <a href="#">About Me</a>
+      <div class="dropdown">
+        <div class="dropdownContent">
+          <p>Hello  I am a Frontend Developer</p>
+        </div>
+      </div>
+    </li>
+
+    <li>
+      <a href="#">Courses</a>
+      <div class="dropdown">
+        <ul class="dropdownContent">
+          <li><span>RFB</span> React For Beginners</li>
+          <li><span>ES6</span> ES6 For Everyone</li>
+          <li><span>STPU</span> Sublime Text Power User</li>
+          <li><span>WTF</span> What The Flexbox?!</li>
+          <li><span>LRX</span> Learn Redux</li>
+          <li><span>CLPU</span> Command Line Power User</li>
+          <li><span>MMD</span> Mastering Markdown</li>
+        </ul>
+      </div>
+    </li>
+
+    <li>
+      <a href="#">Other Links</a>
+      <div class="dropdown">
+        <div class="dropdownContent">
+          <p>Twitter • GitHub • Portfolio</p>
+        </div>
+      </div>
+    </li>
+
+  </ul>
+
+  <span class="dropdownBackground"></span>
+  <span class="arrow"></span>
+</nav>
+
+<script>
+  const triggers = document.querySelectorAll('.menu > li');
+  const background = document.querySelector('.dropdownBackground');
+  const nav = document.querySelector('.nav');
+  const arrow = document.querySelector('.arrow');
+
+  function handleEnter() {
+    const dropdown = this.querySelector('.dropdown');
+
+    // Temporarily make dropdown invisible but rendered, so we can measure it
+    dropdown.style.visibility = 'hidden';
+    dropdown.style.opacity = '1';
+    dropdown.style.transform = 'translateX(-50%) translateY(0)';
+
+    requestAnimationFrame(() => {
+      const navRect = nav.getBoundingClientRect();
+      const triggerRect = this.getBoundingClientRect();
+      const dropdownRect = dropdown.getBoundingClientRect();
+
+      // Center white box under the hovered trigger
+      const left = (triggerRect.left - navRect.left) + (triggerRect.width / 2) - (dropdownRect.width / 2);
+      const top  = (triggerRect.bottom - navRect.top) + 10;
+
+      background.style.width     = dropdownRect.width  + 'px';
+      background.style.height    = dropdownRect.height + 'px';
+      background.style.transform = `translate(${left}px, ${top}px)`;
+      background.style.opacity   = '1';
+
+      // Arrow centered above the white box
+      const arrowLeft = (triggerRect.left - navRect.left) + (triggerRect.width / 2) - 10;
+      arrow.style.transform = `translate(${arrowLeft}px, ${top - 10}px) rotate(45deg)`;
+      arrow.style.opacity   = '1';
+
+      // Restore dropdown to normal CSS-driven visibility
+      dropdown.style.visibility = '';
+      dropdown.style.opacity    = '';
+      dropdown.style.transform  = '';
+
+      this.classList.add('trigger-enter');
+    });
+  }
+
+  function handleLeave() {
+    this.classList.remove('trigger-enter');
+    background.style.opacity = '0';
+    arrow.style.opacity      = '0';
+  }
+
+  triggers.forEach(t => t.addEventListener('mouseenter', handleEnter));
+  triggers.forEach(t => t.addEventListener('mouseleave', handleLeave));
+</script>
+
+</body>
+</html>

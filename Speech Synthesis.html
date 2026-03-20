@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Voiceinator Simple</title>
+  <style>
+    body {
+      font-family: Arial;
+      text-align: center;
+      background: #f4f4f4;
+      padding: 20px;
+    }
+
+    .box {
+      background: white;
+      padding: 20px;
+      max-width: 400px;
+      margin: auto;
+      border-radius: 10px;
+    }
+
+    select, textarea {
+      width: 100%;
+      margin: 10px 0;
+      padding: 8px;
+    }
+
+    button {
+      padding: 10px 20px;
+      margin: 10px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="box">
+    <h2>Speech synthesis</h2>
+
+    <!-- Voice Dropdown -->
+    <select id="voices">select voice</select>
+
+    <!-- Rate -->
+    <label>Rate</label>
+    <input type="range" id="rate" min="0.5" max="2" step="0.1" value="1">
+
+    <!-- Pitch -->
+    <label>Pitch</label>
+    <input type="range" id="pitch" min="0" max="2" step="0.1" value="1">
+
+    <!-- Text -->
+    <textarea id="text" rows="4">Hello! I love JavaScript </textarea>
+
+    <!-- Buttons -->
+    <br>
+    <button onclick="stopText()">Stop</button>
+    <button onclick="speakText()">Speak</button>
+  </div>
+
+  <script>
+    const speech = new SpeechSynthesisUtterance(); // we have created a speaker object
+    const voiceSelect = document.getElementById("voices"); // Connects to voice dropdown
+
+    let voices = []; // Empty list to store voices 
+    // Load voices
+    // function loadVoices() {
+    //   voices = speechSynthesis.getVoices();
+
+    //   voiceSelect.innerHTML = "";
+
+    //   voices.forEach((voice, index) => {
+    //     const option = document.createElement("option");
+    //     option.value = index;
+    //     option.textContent = voice.name + " (" + voice.lang + ")";
+    //     voiceSelect.appendChild(option);
+    //   });
+    // }
+
+// this function  gets the voice from the browser and  shows them in dropbox
+function loadVoices() {
+  voices = speechSynthesis.getVoices();   
+  voiceSelect.innerHTML = "";
+
+  // Add default option
+  const defaultOption = document.createElement("option");
+  defaultOption.textContent = "Select Voice";
+  defaultOption.value = "";
+  defaultOption.disabled = true;
+  defaultOption.selected = true;
+  voiceSelect.appendChild(defaultOption);
+
+  // Filter (optional)
+  const filteredVoices = voices.filter(voice =>
+    voice.lang.startsWith("en")
+  );
+
+  filteredVoices.forEach((voice, index) => {
+    const option = document.createElement("option");
+    option.value = index;
+    option.textContent = voice.name + " (" + voice.lang + ")";
+    voiceSelect.appendChild(option); // You display voices to user
+  });
+
+  voices = filteredVoices;
+}
+
+
+
+
+
+    // Speak
+    // function speakText() {
+    //   speech.text = document.getElementById("text").value;
+    //   speech.rate = document.getElementById("rate").value;
+    //   speech.pitch = document.getElementById("pitch").value;
+
+    //   const selectedIndex = voiceSelect.value;
+    //   speech.voice = voices[selectedIndex];
+
+    //   speechSynthesis.speak(speech);
+    // }
+
+
+
+    function speakText() {
+  if (voiceSelect.value === "") {
+    alert("Please select a voice first!");
+    return;
+  }
+
+  speech.text = document.getElementById("text").value;
+  speech.rate = document.getElementById("rate").value;
+  speech.pitch = document.getElementById("pitch").value;
+
+  speech.voice = voices[voiceSelect.value];
+
+  speechSynthesis.speak(speech);
+}
+    // Stop
+    function stopText() {
+      speechSynthesis.cancel();
+    }
+
+    // Load voices properly
+    speechSynthesis.onvoiceschanged = loadVoices;
+  </script>
+
+</body>
+</html>
